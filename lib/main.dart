@@ -1,19 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app/cubits/get_weather_cubit/get_weather_cubit.dart';
+import 'package:weather_app/cubits/get_weather_cubit/get_weather_states.dart';
 import 'package:weather_app/views/home_view.dart';
+import 'package:weather_app/views/themes/get_themes_color.dart';
 
 void main() {
-  runApp(const WetherApp());
+  runApp(const WeatherApp());
 }
 
-class WetherApp extends StatelessWidget {
-  const WetherApp({super.key});
+class WeatherApp extends StatelessWidget {
+  const WeatherApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomeView(),
+    return BlocProvider(
+      create: (context) => GetWeatherCubit(),
+      child: Builder(
+        builder: (context) {
+          return BlocBuilder<GetWeatherCubit, GetWeatherState>(
+            builder: (context, state) {
+              final weatherCondition = BlocProvider.of<GetWeatherCubit>(context)
+                  .weatherModel
+                  ?.weatherCondition;
+
+              final themeColor = getThemeColor(weatherCondition);
+
+              return MaterialApp(
+                theme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
+                  appBarTheme: AppBarTheme(backgroundColor: themeColor),
+                ),
+                debugShowCheckedModeBanner: false,
+                home: const HomeView(),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
