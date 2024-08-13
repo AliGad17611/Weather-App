@@ -7,7 +7,7 @@ import 'package:weather_app/services/weather_service.dart';
 
 class GetWeatherCubit extends Cubit<GetWeatherState> {
   GetWeatherCubit() : super(GetWeatherInitialState());
-   WeatherModel? weatherModel;
+  WeatherModel? weatherModel;
 
   Future<void> getWeather({required String cityName}) async {
     emit(GetWeatherLoadingState());
@@ -19,7 +19,13 @@ class GetWeatherCubit extends Cubit<GetWeatherState> {
       emit(GetWeatherLoadedState(weatherModel: weatherModel!));
     } catch (e) {
       log(e.toString());
-      emit(GetWeatherErrorState());
+      if (e.toString() == 'Exception: Parameter q is missing.') {
+        emit(GetWeatherMissingCityErrorState());
+      } else if (e.toString() == 'Exception: No matching location found.') {
+        emit(GetWeatherInvalidCityErrorState());
+      } else {
+        emit(GetWeatherErrorState());
+      }
     }
   }
 }

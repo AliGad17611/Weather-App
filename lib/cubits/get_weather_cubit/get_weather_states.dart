@@ -14,7 +14,10 @@ class GetWeatherLoadedState extends GetWeatherState {
   GetWeatherLoadedState({required this.weatherModel});
 
 }
+class GetWeatherMissingCityErrorState extends GetWeatherState {}
+class GetWeatherInvalidCityErrorState extends GetWeatherState {}
+
 
 class GetWeatherErrorState extends GetWeatherState {
-
+  
 }
